@@ -39,6 +39,7 @@ class clamavfile:
         self.stime = ''
         self.headersize = 0
         self.footersize = 0
+        self.datasize = 0
         self.clamavfile = False
         self.stat = self._fileinfo()
         self._header()
@@ -48,6 +49,17 @@ class clamavfile:
         self.pss_nstr = 14783905874077467090262228516557917570254599638376203532031989214105552847269687489771975792123442185817287694951949800908791527542017115600501303394778618535864845235700041590056318230102449612217458549016089313306591388590790796515819654102320725712300822356348724011232654837503241736177907784198700834440681124727060540035754699658105895050096576226753008596881698828185652424901921668758326578462003247906470982092298106789657211905488986281078346361469524484829559560886227198091995498440676639639830463593211386055065360288422394053998134458623712540683294034953818412458362198117811990006021989844180721010947
         self.pss_estr = 100002053
         self.pss_nbits = 2048
+
+    def datatofile(self, destinationfile: str) -> None:
+        with open(self.filename, 'rb') as clamfile:
+            if self.magicheader == 'ClamAV-VDB':
+                clamfile.read(self.headersize)
+                with open(destinationfile, 'wb') as extractfile:
+                    extractfile.write(clamfile.read())
+            if self.magicheader == 'ClamAV-Diff':
+                clamfile.read(self.headersize)
+                with open(destinationfile, 'wb') as extractfile:
+                    extractfile.write(clamfile.read(self.datasize))
 
     def _chardecode(self, onechar: str) -> int:
         chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/'
@@ -216,6 +228,8 @@ class clamavfile:
             if signatureposition != -1:
                 self.footersize = 350 - signatureposition
                 self.signature = signaturedata[signatureposition + 1:].decode('utf-8')
+
+        self.datasize = self.stat.st_size - self.headersize - self.footersize
 
         return None
 
