@@ -22,10 +22,10 @@ import hashlib
 
 
 class clamavfile:
-    'Extract metadata from ClamAV'
+    'Extract metadata from ClamAV files'
     def __init__(self, clamfile):
         if not os.path.exists(clamfile):
-            return None
+            raise FileNotFoundError(clamfile)
         self.filename = clamfile
         self.magicheader = self._magicheader()
         self.filetype = ''
@@ -81,7 +81,7 @@ class clamavfile:
         # /* plain = cipher^e mod n */
         plainmod = pow(added, e, n)
 
-        return plainmod
+        return format(plainmod, "02x")
 
     def _stringtolist(self, instr: str) -> list:
         return [(instr[i:i+2]) for i in range(0, len(instr), 2)]
@@ -96,21 +96,19 @@ class clamavfile:
                 clamfile.read(512)
                 for chunk in iter(lambda: clamfile.read(8192), b''):
                     md5object.update(chunk)
-                decryptedhash = format(self._decodesignature(self.signature,
-                                                             self.estr,
-                                                             self.nstr), '02x')
+                decryptedhash = self._decodesignature(self.signature,
+                                                      self.estr,
+                                                      self.nstr)
                 if len(decryptedhash) < 32:
                     decryptedhash = '0' + decryptedhash
                 if decryptedhash == md5object.hexdigest():
                     return True
             if self.magicheader == 'ClamAV-Diff':
-                cdiffsignature = self._decodesignature(self.signature,
+                decryptedsignaturestring = self._decodesignature(self.signature,
                                                        self.pss_estr,
                                                        self.pss_nstr)
-                decryptedsignaturestring = format(cdiffsignature, '02x')
-                decstring = format(cdiffsignature, '02x')
-                if len(decstring) == 511:
-                    decryptedsignaturestring = '0' + decstring
+                if len(decryptedsignaturestring) == 511:
+                    decryptedsignaturestring = '0' + decryptedsignaturestring
                 decryptedsignaturelist = self._stringtolist(decryptedsignaturestring)
                 bytestoread = self.stat.st_size - self.footersize
                 data = clamfile.read(bytestoread)
