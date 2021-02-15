@@ -99,16 +99,14 @@ class clamavfile:
                 decryptedhash = self._decodesignature(self.signature,
                                                       self.estr,
                                                       self.nstr)
-                if len(decryptedhash) < 32:
-                    decryptedhash = '0' + decryptedhash
+                decryptedhash = decryptedhash.zfill(32)
                 if decryptedhash == md5object.hexdigest():
                     return True
             if self.magicheader == 'ClamAV-Diff':
                 decryptedsignaturestring = self._decodesignature(self.signature,
                                                        self.pss_estr,
                                                        self.pss_nstr)
-                if len(decryptedsignaturestring) == 511:
-                    decryptedsignaturestring = '0' + decryptedsignaturestring
+                decryptedsignaturestring = decryptedsignaturestring.zfill(512)
                 decryptedsignaturelist = self._stringtolist(decryptedsignaturestring)
                 bytestoread = self.stat.st_size - self.footersize
                 data = clamfile.read(bytestoread)
