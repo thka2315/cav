@@ -286,6 +286,15 @@ class clamavfile:
 
         return 0
 
+    def md5(self) -> str:
+        """
+            Returns the md5 hash of the signatures
+        """
+        if 'md5' in self.header:
+            return self.header['md5']
+
+        return str()
+
     def signature(self) -> int:
         """
             Returns the signature of the signatures
@@ -295,14 +304,14 @@ class clamavfile:
 
         return 0
 
-    def builder(self) -> int:
+    def builder(self) -> str:
         """
             Returns the builder of the signatures
         """
         if 'builder' in self.header:
             return self.header['builder']
 
-        return 0
+        return str()
 
     def epoch(self) -> int:
         """
@@ -333,20 +342,3 @@ class clamavfile:
             return True
 
         return False
-
-    # def _filetype(self) -> str:
-    #     """
-    #     Return filetype
-    #     ClamAV-Diff:50:4228877:
-    #     ClamAV-VDB:22 Mar 2020 09-14 -0400:
-    #         25759:2234135:63:098e56e33ae0db8b9d3b536ee80fb66e
-    #     """
-    #     filetype = self.magicheader
-    #     if filetype == 'ClamAV-VDB':
-    #         self.clamavfile = True
-    #         return filetype
-    #     elif filetype == 'ClamAV-Diff':
-    #         self.clamavfile = True
-    #         return filetype
-    #     else:
-    #         return 'Unknown'
