@@ -37,7 +37,7 @@ class clamavfile:
         self.pss_estr = 100002053
         self.pss_nbits = 2048
 
-    def datatofile(self, destinationfile: str) -> None:
+    def savetofile(self, destinationfile: str) -> None:
         with open(self.filename, 'rb') as clamfile:
             if self.magicheader == 'ClamAV-VDB':
                 clamfile.read(self.headersize())
@@ -91,8 +91,8 @@ class clamavfile:
                     return True
             if self.magicheader == 'ClamAV-Diff':
                 decryptedsignaturestring = self._decodesignature(self.signature(),
-                                                       self.pss_estr,
-                                                       self.pss_nstr)
+                                                                 self.pss_estr,
+                                                                 self.pss_nstr)
                 decryptedsignaturestring = decryptedsignaturestring.zfill(512)
                 decryptedsignaturelist = self._stringtolist(decryptedsignaturestring)
                 bytestoread = self.fileinfo.st_size - self.footersize()
@@ -205,10 +205,10 @@ class clamavfile:
             header['filetype'] = so[0].decode('utf-8')
             header['version'] = int(so[1].decode('utf-8'))
             header['signatures'] = int(so[2].decode('utf-8'))
-            header['headersize'] = int(len(str(header['filetype'])) + \
-                len(str(header['version'])) + \
-                len(str(header['signatures'])) + \
-                3)
+            header['headersize'] = int(len(str(header['filetype'])) +
+                                       len(str(header['version'])) +
+                                       len(str(header['signatures'])) +
+                                       3)
             signatureposition = -1
             for i in range(0, 349):
                 if not self._signaturecharacter(signaturedata[i]):
