@@ -42,7 +42,7 @@ def test_fileinfo_daily():
     assert clamobject.md5() == '92baacd59fd26e6bcf03077add78d209'
     assert clamobject.signature() == '4Jp9JtGJY6nUk8JHDQQpQeBwlfXqskvhXL+vesDNqAeWCmjbudU+Hy/Nj4/BH2vl70c/R5B/VYY+eqqCQo6o7VGLqLJr/E+19gejqMp/iRcuHrtnLw6V/x3UjO3/qYVSlcJvAjtMI7FK32wjB+Sp8kaS/ZbfaFQp6trRQhisjqf'
     assert clamobject.builder() == 'raynman'
-
+    assert clamobject.createheader() == 'ClamAV-VDB:16 Apr 2020 07-58 -0400:25784:2267600:63:92baacd59fd26e6bcf03077add78d209:4Jp9JtGJY6nUk8JHDQQpQeBwlfXqskvhXL+vesDNqAeWCmjbudU+Hy/Nj4/BH2vl70c/R5B/VYY+eqqCQo6o7VGLqLJr/E+19gejqMp/iRcuHrtnLw6V/x3UjO3/qYVSlcJvAjtMI7FK32wjB+Sp8kaS/ZbfaFQp6trRQhisjqf:raynman:1587038339'
 
 def test_fileinfo_daily_failed():
     clamobject = clamavfile('daily-signature-fail.cvd')

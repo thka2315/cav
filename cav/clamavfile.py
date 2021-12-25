@@ -165,6 +165,15 @@ class clamavfile:
 
         return so[0].decode('utf-8')
 
+    def createheader(self) -> str:
+        headerstr: str = ':'.join([self.filetype(), self.signaturedate(),
+                                   str(self.version()), str(self.signatures()),
+                                   str(self.functionalitylevel()), self.md5(),
+                                   self.signature(), self.builder(),
+                                   str(self.epoch())])
+
+        return headerstr
+
     def readheader(self) -> Dict[str, Any]:
         """
         Get the magic header bytes from the file to see what kind of
@@ -295,14 +304,14 @@ class clamavfile:
 
         return str()
 
-    def signature(self) -> int:
+    def signature(self) -> str:
         """
             Returns the signature of the signatures
         """
         if 'signature' in self.header:
             return self.header['signature']
 
-        return 0
+        return str()
 
     def builder(self) -> str:
         """
